@@ -27,10 +27,10 @@ WHERE customer_id IS NULL OR
 
 -- 0
 
--- La table Customers présente-t-elle des valeurs nulles? 
+-- La table présente deux id, (un de jointure, l’autre comme clef primaire). Est ce que l’un de ces ID est en doublon? 
 
 SELECT COUNT(*) FROM(
-    SELECT customer_unique_id,COUNT(*) as nb_lignes
+    SELECT customer_id,COUNT(*) as nb_lignes
     FROM CUSTOMERS
     GROUP BY customer_id
     HAVING nb_lignes > 1 
@@ -61,11 +61,6 @@ GROUP BY customer_state
 ORDER BY nb_client DESC
 
 
--- 4119|27
--- 773
--- 0
--- 0
--- 2997
 -- SP|40302
 -- RJ|12384
 -- MG|11259

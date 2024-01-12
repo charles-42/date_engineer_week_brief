@@ -1,9 +1,6 @@
 -- Execute this command to create the tables
 -- sqlite3 olist.db < create_table.sql
 
-
-
-
 -- Create table StateName
 CREATE TABLE IF NOT EXISTS StateName (
     state TEXT PRIMARY KEY,

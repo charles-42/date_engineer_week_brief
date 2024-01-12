@@ -9,6 +9,32 @@
 -- faire une jointure enfin sur la table consumers pour récupérer le pays.
 
 
+
+
+
+
+
+SELECT customer_state, COUNT(DISTINCT order_id) as nb_comamandes, COUNT(*) as nb_produits_vendus, SUM(price) AS chiffre_affaires
+FROM
+( SELECT A.order_id, A.Order_item_id, A.price, C.customer_state
+FROM OrderItem A
+LEFT JOIN Orders B ON A.order_id = B.order_id
+LEFT JOIN Customers C ON B.customer_id = C.customer_id 
+)
+GROUP BY customer_state;
+
+WITH ma_joiture_de_base AS (
+SELECT A.order_id, A.Order_item_id, A.price, C.customer_state
+FROM OrderItem A
+LEFT JOIN Orders B ON A.order_id = B.order_id
+LEFT JOIN Customers C ON B.customer_id = C.customer_id 
+)
+SELECT customer_state, COUNT(DISTINCT order_id) as nb_comamandes, COUNT(*) as nb_produits_vendus, SUM(price) AS chiffre_affaires
+FROM ma_joiture_de_base
+GROUP BY customer_state
+;
+
+
 WITH order_price AS (
 SELECT order_id, COUNT(*) AS nb_item, sum(price) AS total_price
 FROM OrderItem
