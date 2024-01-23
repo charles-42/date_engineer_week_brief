@@ -42,10 +42,42 @@ if df_reviews.shape[0]!= 98344:
 else:
     print("Gestion des dates (valeurs manquantes): OK")
 
-# Creation de la BDD propre
-    
-df_reviews.to_sql('ReviewsClean', connection, index=False, if_exists='replace')
 
-print("Table ReviewsClean mise à jour")
+# Jointure avec la Table Orders
+df_orders = pd.read_sql_query("SELECT * FROM Orders",connection)
+df = df_reviews.merge(df_orders, how='left', on ='order_id')
+
+if df.shape[0]!= 98344:    
+    raise ValueError("Le nombre de lignes ne correspond pas")
+else:
+    print("Jointure avec Orders: OK")
+
+
+# Gestion des types de data
+df.order_purchase_timestamp = pd.to_datetime(df['order_purchase_timestamp'], 
+                                            format= '%Y-%m-%d %H:%M:%S', 
+                                            errors="coerce")
+
+df.order_delivered_customer_date = pd.to_datetime(df['order_delivered_customer_date'], 
+                                                  format= '%Y-%m-%d %H:%M:%S', 
+                                                  errors="coerce")
+
+df.order_estimated_delivery_date = pd.to_datetime(df['order_estimated_delivery_date'], 
+                                                  format= '%Y-%m-%d %H:%M:%S', 
+                                                  errors="coerce")
+
+
+if df.dtypes['order_estimated_delivery_date'] != dtype('<M8[ns]') \
+    or df.dtypes['order_delivered_customer_date'] != dtype('<M8[ns]')\
+    or df.dtypes['order_estimated_delivery_date'] != dtype('<M8[ns]')    :
+    raise ValueError("Les dates ne sont pas au bon format")
+else:
+    print("Gestion des dates (Orders): OK")
+
+#Création de la table CleanDataset
+
+df.to_sql('CleanDataset', connection, index=False, if_exists='replace')
+
+print("Table CleanDataset mise à jour")
 
 connection.close()
