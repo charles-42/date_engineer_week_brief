@@ -22,6 +22,8 @@ def f(x):
 
 df['produit_recu'] = df[["order_delivered_customer_date","review_creation_date"]].apply(f, axis=1)
 
+df["order_status"] = df["order_status"].apply(lambda x: "unavailable" if x in ["created","approved"] else x)
+
 
 df.to_sql('TrainingDataset', connection, index=False, if_exists='replace')
 
